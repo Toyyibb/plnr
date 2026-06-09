@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register | Plnr</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card glass-card overflow-hidden">
+            <div class="row g-0">
+              <div class="col-lg-6 p-4 p-md-5">
+                <div class="brand-badge mb-3">P</div>
+                <h1 class="fw-bold mb-2">Create your Plnr account</h1>
+                <p class="text-secondary">Register to save your tasks and access the planner dashboard.</p>
+
+                <div id="registerError" class="alert alert-danger d-none"></div>
+
+                <form id="registerForm" class="vstack gap-3">
+                  <div>
+                    <label class="form-label">Full name</label>
+                    <input type="text" id="regName" class="form-control" required>
+                  </div>
+                  <div>
+                    <label class="form-label">Email</label>
+                    <input type="email" id="regEmail" class="form-control" required>
+                  </div>
+                  <div>
+                    <label class="form-label">Password</label>
+                    <input type="password" id="regPassword" class="form-control" required>
+                    <div class="form-text">At least 8 characters, with uppercase, lowercase, and a number.</div>
+                  </div>
+                  <div>
+                    <label class="form-label">Confirm password</label>
+                    <input type="password" id="regConfirm" class="form-control" required>
+                  </div>
+                  <button class="btn btn-primary btn-lg">Register</button>
+                </form>
+
+                <p class="mt-3 mb-0">Already have an account? <a href="login.html">Login</a></p>
+              </div>
+              <div class="col-lg-6 d-none d-lg-flex hero-panel p-5 align-items-center">
+                <div>
+                  <h2 class="fw-bold">Modern task planning.</h2>
+                  <p class="mb-0 text-secondary">Keep your projects organized with a clean dashboard, priorities, and due dates.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    const registerForm = document.getElementById("registerForm");
+    const registerError = document.getElementById("registerError");
+
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      clearError(registerError);
+
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+      const password = document.getElementById("regPassword").value;
+      const confirm = document.getElementById("regConfirm").value;
+
+      if (!name) return showError(registerError, "Name is required.");
+      if (!validateEmail(email)) return showError(registerError, "Please enter a valid email address.");
+      if (!validatePassword(password)) return showError(registerError, "Password must be at least 8 characters and include uppercase, lowercase, and a number.");
+      if (password !== confirm) return showError(registerError, "Passwords do not match.");
+
+      const users = getUsers();
+      if (users.some(u => u.email === email)) return showError(registerError, "An account with this email already exists.");
+
+      users.push({ name, email, password });
+      saveUsers(users);
+      alert("Registration successful. Please log in.");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>
